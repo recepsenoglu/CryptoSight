@@ -2,6 +2,7 @@ import 'package:cryptosight/app/features/news/domain/notifiers/news_notifier.dar
 import 'package:cryptosight/app/features/news/presentation/widgets/currency_selection_chips.dart';
 import 'package:cryptosight/app/features/news/presentation/widgets/filter_chips.dart';
 import 'package:cryptosight/app/features/news/presentation/widgets/news_item_list_tile.dart';
+import 'package:cryptosight/app/features/news/presentation/widgets/region_select_button.dart';
 import 'package:cryptosight/app/features/news/providers/news_provider.dart';
 import 'package:cryptosight/shared/utils/extensions.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,22 @@ class NewsScreen extends ConsumerWidget {
     final newsState = ref.watch(newsNotifierProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('News')),
+      appBar: AppBar(
+        title: const Text('News'),
+        titleTextStyle: const TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+        ),
+        actions: [
+          RegionSelectButton(
+            onRegionSelected: (region) {
+              ref
+                  .read(newsNotifierProvider.notifier)
+                  .updateFilter(newRegions: region);
+            },
+          ),
+        ],
+      ),
       body: Column(
         children: [
           FilterChips(
