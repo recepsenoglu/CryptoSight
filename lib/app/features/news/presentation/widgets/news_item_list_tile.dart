@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cryptosight/app/features/news/data/models/news_model.dart';
 import 'package:cryptosight/shared/utils/extensions.dart';
 import 'package:cryptosight/shared/utils/webview_helpers.dart';
@@ -48,17 +46,12 @@ class NewsItemListTile extends StatelessWidget with WebViewHelpers{
                     spacing: 8, // Add space between each chip
                     children: currencies
                         .map(
-                          (currency) => GestureDetector(
-                            onTap: () {
-                              log('Tapped on ${currency.code}');
-                            },
-                            child: Text(
-                              currency.code,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.amber,
-                              ), // Text style inside chip
-                            ),
+                          (currency) => Text(
+                            currency.code,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.amber,
+                            ), // Text style inside chip
                           ),
                         )
                         .toList(),

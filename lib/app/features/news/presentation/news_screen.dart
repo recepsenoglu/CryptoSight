@@ -28,8 +28,9 @@ class NewsScreen extends ConsumerWidget {
           ? const Center(child: CircularProgressIndicator())
           : newsState.status == NewsStateStatus.error
               ? Text('Error: ${newsState.errorMessage}')
-              : ListView.builder(
+              : ListView.separated(
                   itemCount: newsState.news?.length ?? 0,
+                  separatorBuilder: (context, index) => const Divider(),
                   itemBuilder: (context, index) {
                     final newsItem = newsState.news![index];
                     return NewsItemListTile(
