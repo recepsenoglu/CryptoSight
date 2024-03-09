@@ -28,6 +28,7 @@ class NewsItemListTile extends StatelessWidget with WebViewHelpers{
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
@@ -44,7 +45,7 @@ class NewsItemListTile extends StatelessWidget with WebViewHelpers{
                 Flexible(
                   child: Wrap(
                     spacing: 8, // Add space between each chip
-                    children: currencies
+                    children: currencies.take(15)
                         .map(
                           (currency) => Text(
                             currency.code,

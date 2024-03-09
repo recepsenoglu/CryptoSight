@@ -9,8 +9,6 @@ class NewsModel {
   final int id;
   final String url;
   final String createdAt;
-  final Votes votes;
-  final Metadata metadata;
 
   NewsModel({
     required this.kind,
@@ -23,33 +21,25 @@ class NewsModel {
     required this.id,
     required this.url,
     required this.createdAt,
-    required this.votes,
-    required this.metadata,
   });
 
   factory NewsModel.fromJson(Map<String, dynamic> json) {
     return NewsModel(
-      kind: json['kind'],
-      domain: json['domain'],
-      source: Source.fromJson(json['source']),
-      title: json['title'],
-      publishedAt: json['published_at'],
-      slug: json['slug'],
+      kind: json['kind'] ?? 'unknown',
+      domain: json['domain'] ?? 'unknown',
+      source: Source.fromJson(json['source'] as Map<String, dynamic>? ?? {}),
+      title: json['title'] ?? 'No title available',
+      publishedAt: json['published_at'] ?? '',
+      slug: json['slug'] ?? '',
       currencies: (json['currencies'] as List<dynamic>?)
-              ?.map<Currency>((item) => Currency.fromJson(item))
+              ?.map<Currency>(
+                  (item) => Currency.fromJson(item as Map<String, dynamic>))
               .toList() ??
           [],
-      id: json['id'],
-      url: json['url'],
-      createdAt: json['created_at'],
-      votes: Votes.fromJson(json['votes']),
-      metadata: Metadata.fromJson(json['metadata']),
+      id: json['id'] ?? 0,
+      url: json['url'] ?? '',
+      createdAt: json['created_at'] ?? '',
     );
-  }
-
-  @override
-  String toString() {
-    return 'NewsModel(kind: $kind, domain: $domain, source: $source, title: $title, publishedAt: $publishedAt, slug: $slug, currencies: $currencies, id: $id, url: $url, createdAt: $createdAt, votes: $votes, metadata: $metadata)';
   }
 }
 
@@ -68,9 +58,9 @@ class Source {
 
   factory Source.fromJson(Map<String, dynamic> json) {
     return Source(
-      title: json['title'],
-      region: json['region'],
-      domain: json['domain'],
+      title: json['title'] ?? 'unknown',
+      region: json['region'] ?? 'unknown',
+      domain: json['domain'] ?? 'unknown',
       path: json['path'],
     );
   }
@@ -117,10 +107,10 @@ class Currency {
 
   factory Currency.fromJson(Map<String, dynamic> json) {
     return Currency(
-      code: json['code'],
-      title: json['title'],
-      slug: json['slug'],
-      url: json['url'],
+      code: json['code'] ?? 'unknown',
+      title: json['title'] ?? 'unknown',
+      slug: json['slug'] ?? 'unknown',
+      url: json['url'] ?? 'unknown',
     );
   }
 }

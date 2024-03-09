@@ -35,7 +35,7 @@ class _FilterChipsState extends State<FilterChips> {
                 widget.onFilterChanged(filter);
               }
             },
-            selectedColor: Colors.red.shade300,
+            selectedColor: Colors.white,
             labelStyle: TextStyle(
               color: _selectedIndex == index ? Colors.black : Colors.white,
               fontSize: 14.0,
