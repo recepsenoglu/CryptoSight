@@ -3,13 +3,13 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class NewsService {
+class NewsApiService {
   final Dio _dio = Dio();
 
   final String _apiKey = dotenv.env['NEWS_API_KEY'] ?? '';
   final String _baseUrl = 'https://cryptopanic.com/api/v1/';
 
-  NewsService() {
+  NewsApiService() {
     _dio.options.baseUrl = _baseUrl;
     _dio.options.headers = {
       'Content-Type': 'application/json',
