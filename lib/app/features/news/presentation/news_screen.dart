@@ -36,7 +36,7 @@ class NewsScreen extends ConsumerWidget {
                       title: newsItem.title,
                       date: newsItem.publishedAt.toDateTime(),
                       domain: newsItem.source.domain,
-                      url: newsItem.url,
+                      url: "https://cryptopanic.com/news/click/${newsItem.id}/",
                       currencies: newsItem.currencies,
                     );
                   },

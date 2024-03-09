@@ -2,9 +2,10 @@ import 'dart:developer';
 
 import 'package:cryptosight/app/features/news/data/models/news_model.dart';
 import 'package:cryptosight/shared/utils/extensions.dart';
+import 'package:cryptosight/shared/utils/webview_helpers.dart';
 import 'package:flutter/material.dart';
 
-class NewsItemListTile extends StatelessWidget {
+class NewsItemListTile extends StatelessWidget with WebViewHelpers{
   const NewsItemListTile({
     super.key,
     required this.title,
@@ -73,7 +74,7 @@ class NewsItemListTile extends StatelessWidget {
         ],
       ),
       onTap: () {
-        log('Tapped on $url');
+        openWebView(context, url, title: title);
       },
     );
   }

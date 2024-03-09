@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cryptosight/app/features/news/data/models/news_filter_model.dart';
 import 'package:cryptosight/app/features/news/providers/news_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,7 +35,6 @@ class NewsNotifier extends StateNotifier<NewsState> {
     try {
       final filter = ref.read(newsFilterProvider);
       final news = await repository.getNews(filter);
-      log('First news: ${news[1].toString()}  ${news[1].metadata.description}');
       state = NewsState.success(news);
     } catch (e) {
       state = NewsState.error(e.toString());
