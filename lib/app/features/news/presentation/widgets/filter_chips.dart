@@ -11,7 +11,7 @@ class FilterChips extends StatefulWidget {
 
 class _FilterChipsState extends State<FilterChips> {
   final List<String> filters =
-      NewsFilterKind.values.map((e) => e.toString()).toList();
+      NewsFilterKind.values.map((e) => e.name).toList();
   int _selectedIndex = 0;
 
   @override
