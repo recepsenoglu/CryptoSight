@@ -1,3 +1,13 @@
+enum NewsFilterKind {
+  all,
+  rising,
+  hot,
+  bullish,
+  bearish,
+  important,
+  lol
+}
+
 class NewsFilterModel {
   final String? filter;
   final String? currencies;

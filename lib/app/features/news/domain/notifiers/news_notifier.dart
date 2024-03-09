@@ -12,20 +12,33 @@ class NewsState {
   final String? errorMessage;
   final NewsFilterModel? currentFilter;
 
-  NewsState({required this.status, this.news, this.errorMessage, this.currentFilter});
+  NewsState(
+      {required this.status, this.news, this.errorMessage, this.currentFilter});
 
-  factory NewsState.loading() => NewsState(status: NewsStateStatus.loading, news: null, errorMessage: null);
+  factory NewsState.loading() => NewsState(
+      status: NewsStateStatus.loading, news: null, errorMessage: null);
 
-  factory NewsState.success(List<NewsModel> news, {NewsFilterModel? filter}) => NewsState(status: NewsStateStatus.success, news: news, errorMessage: null, currentFilter: filter);
+  factory NewsState.success(List<NewsModel> news, {NewsFilterModel? filter}) =>
+      NewsState(
+          status: NewsStateStatus.success,
+          news: news,
+          errorMessage: null,
+          currentFilter: filter);
 
-  factory NewsState.error(String message, {NewsFilterModel? filter}) => NewsState(status: NewsStateStatus.error, news: null, errorMessage: message, currentFilter: filter);
+  factory NewsState.error(String message, {NewsFilterModel? filter}) =>
+      NewsState(
+          status: NewsStateStatus.error,
+          news: null,
+          errorMessage: message,
+          currentFilter: filter);
 }
 
 class NewsNotifier extends StateNotifier<NewsState> {
   final NewsRepository repository;
   final Ref ref;
 
-  NewsNotifier(this.ref, {required this.repository}) : super(NewsState.loading()) {
+  NewsNotifier(this.ref, {required this.repository})
+      : super(NewsState.loading()) {
     // Initialize with fetching news
     fetchNewsWithFilters();
   }
@@ -40,9 +53,33 @@ class NewsNotifier extends StateNotifier<NewsState> {
       state = NewsState.error(e.toString());
     }
   }
+
   // Add a method to refresh news with the current filter settings
   void refreshNews() {
     fetchNewsWithFilters();
   }
-}
 
+  void updateFilter({
+    String? newFilter,
+    String? newCurrencies,
+    String? newRegions,
+    String newKind = 'news',
+  }) {
+    final currentState = ref.read(newsFilterProvider);
+    // Create a new filter model by merging existing state with new values
+    final updatedFilter = NewsFilterModel(
+      filter: newFilter ?? currentState.filter,
+      currencies: newCurrencies ?? currentState.currencies,
+      regions: newRegions ?? currentState.regions,
+      kind: newKind,
+    );
+
+    if (currentState == updatedFilter) return;
+
+    // Update the state with the new filter
+    ref.read(newsFilterProvider.notifier).state = updatedFilter;
+
+    // Optionally, fetch news immediately after updating the filter
+    fetchNewsWithFilters();
+  }
+}

@@ -81,6 +81,32 @@ class Currency {
   final String title;
   final String slug;
   final String url;
+  static final List<String> currencies = [
+    'BTC',
+    'ETH',
+    'XRP',
+    'LTC',
+    'BCH',
+    'ADA',
+    'DOT',
+    'LINK',
+    'BNB',
+    'XLM',
+    'USDT',
+    'USDC',
+    'DOGE',
+    'UNI',
+    'WBTC',
+    'AAVE',
+    'ATOM',
+    'EOS',
+    'FIL',
+    'TRX',
+    'XTZ',
+    'YFI',
+    'ZEC',
+    'ZRX'
+  ];
 
   Currency({
     required this.code,
