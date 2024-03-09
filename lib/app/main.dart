@@ -17,10 +17,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Crypto Sight',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.dark,
       initialRoute: RouteNames.initial,
       navigatorKey: AppRouter.navigatorKey,
       onGenerateRoute: AppRouter.onGenerateRoute,

@@ -1,6 +1,8 @@
 import 'package:cryptosight/app/features/news/data/models/news_filter_model.dart';
 import 'package:cryptosight/app/features/news/domain/notifiers/news_notifier.dart';
+import 'package:cryptosight/app/features/news/presentation/widgets/news_item_list_tile.dart';
 import 'package:cryptosight/app/features/news/providers/news_provider.dart';
+import 'package:cryptosight/shared/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,7 +19,8 @@ class NewsScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () => ref.read(newsNotifierProvider.notifier).refreshNews(),
+            onPressed: () =>
+                ref.read(newsNotifierProvider.notifier).refreshNews(),
           ),
         ],
       ),
@@ -29,19 +32,15 @@ class NewsScreen extends ConsumerWidget {
                   itemCount: newsState.news?.length ?? 0,
                   itemBuilder: (context, index) {
                     final newsItem = newsState.news![index];
-                    return ListTile(
-                      title: Text(newsItem.title),
-                      subtitle: Text(newsItem.slug),
-                      // Add more details or an onTap handler as needed
+                    return NewsItemListTile(
+                      title: newsItem.title,
+                      date: newsItem.publishedAt.toDateTime(),
+                      domain: newsItem.source.domain,
+                      url: newsItem.url,
+                      currencies: newsItem.currencies,
                     );
                   },
                 ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          updateFilters(ref);
-        },
-        child: const Icon(Icons.filter_list),
-      ),
     );
   }
 

@@ -46,6 +46,11 @@ class NewsModel {
       metadata: Metadata.fromJson(json['metadata']),
     );
   }
+
+  @override
+  String toString() {
+    return 'NewsModel(kind: $kind, domain: $domain, source: $source, title: $title, publishedAt: $publishedAt, slug: $slug, currencies: $currencies, id: $id, url: $url, createdAt: $createdAt, votes: $votes, metadata: $metadata)';
+  }
 }
 
 class Source {
