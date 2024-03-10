@@ -1,4 +1,5 @@
 import 'package:cryptosight/app/features/news/data/models/news_filter_model.dart';
+import 'package:cryptosight/shared/utils/screen_config.dart';
 import 'package:flutter/material.dart';
 
 class FilterChips extends StatefulWidget {
@@ -17,34 +18,39 @@ class _FilterChipsState extends State<FilterChips> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 45,
+      height: ScreenConfig.scaledHeight(0.05),
       width: double.infinity,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           final String filter = filters[index];
-          return ChoiceChip(
-            showCheckmark: false,
-            label: Text(filter.toUpperCase()),
-            selected: _selectedIndex == index,
-            onSelected: (bool selected) {
-              if (_selectedIndex != index) {
-                setState(() {
-                  _selectedIndex = selected ? index : 0;
-                });
-                widget.onFilterChanged(filter);
-              }
-            },
-            selectedColor: Colors.white,
-            labelStyle: TextStyle(
-              color: _selectedIndex == index ? Colors.black : Colors.white,
-              fontSize: 14.0,
-              fontWeight: FontWeight.bold,
+          return Padding(
+            padding: EdgeInsets.only(
+                left: index == 0 ? ScreenConfig.scaledWidth(0.02) : 0),
+            child: ChoiceChip(
+              showCheckmark: false,
+              label: Text(filter.toUpperCase()),
+              selected: _selectedIndex == index,
+              onSelected: (bool selected) {
+                if (_selectedIndex != index) {
+                  setState(() {
+                    _selectedIndex = selected ? index : 0;
+                  });
+                  widget.onFilterChanged(filter);
+                }
+              },
+              selectedColor: Colors.white,
+              labelStyle: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: ScreenConfig.scaledFontSize(0.8),
+                color: _selectedIndex == index ? Colors.black : Colors.white,
+              ),
+              labelPadding: ScreenConfig.horizontalDynamicPadding(0.01),
             ),
-            labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
           );
         },
-        separatorBuilder: (context, index) => const SizedBox(width: 10),
+        separatorBuilder: (context, index) =>
+            SizedBox(width: ScreenConfig.scaledWidth(0.02)),
         itemCount: filters.length,
       ),
     );

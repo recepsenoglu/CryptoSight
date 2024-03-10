@@ -1,4 +1,5 @@
 import 'package:cryptosight/app/core/router/app_router.dart';
+import 'package:cryptosight/shared/utils/screen_config.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -64,7 +65,15 @@ class _WebViewScreenState extends State<WebViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
+      appBar: AppBar(
+        title: Text(
+          widget.title,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: ScreenConfig.scaledFontSize(1),
+          ),
+        ),
+      ),
       body: progress < 100
           ? Center(
               child: CircularProgressIndicator(

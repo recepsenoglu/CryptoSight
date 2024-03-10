@@ -1,9 +1,10 @@
 import 'package:cryptosight/app/features/news/data/models/news_model.dart';
 import 'package:cryptosight/shared/utils/extensions.dart';
+import 'package:cryptosight/shared/utils/screen_config.dart';
 import 'package:cryptosight/shared/utils/webview_helpers.dart';
 import 'package:flutter/material.dart';
 
-class NewsItemListTile extends StatelessWidget with WebViewHelpers{
+class NewsItemListTile extends StatelessWidget with WebViewHelpers {
   const NewsItemListTile({
     super.key,
     required this.title,
@@ -23,6 +24,10 @@ class NewsItemListTile extends StatelessWidget with WebViewHelpers{
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(title),
+      titleTextStyle: TextStyle(
+        fontWeight: FontWeight.w500,
+        fontSize: ScreenConfig.scaledFontSize(1),
+      ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -31,28 +36,31 @@ class NewsItemListTile extends StatelessWidget with WebViewHelpers{
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  const Icon(Icons.link, size: 12),
-                  const SizedBox(width: 4),
+                  Icon(Icons.link, size: ScreenConfig.scaledFontSize(0.9)),
+                  SizedBox(width: ScreenConfig.scaledWidth(0.01)),
                   Text(
                     domain,
-                    style: const TextStyle(fontSize: 12),
+                    style:
+                        TextStyle(fontSize: ScreenConfig.scaledFontSize(0.7)),
                   ),
-                  const SizedBox(width: 24),
+                  SizedBox(width: ScreenConfig.scaledWidth(0.01)),
                 ],
               ),
               if (currencies.isNotEmpty)
                 Flexible(
                   child: Wrap(
-                    spacing: 8, // Add space between each chip
-                    children: currencies.take(15)
+                    spacing: ScreenConfig.scaledWidth(0.015),
+                    children: currencies
+                        .take(15)
                         .map(
                           (currency) => Text(
                             currency.code,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.amber,
-                            ), // Text style inside chip
+                            style: TextStyle(
+                                color: Colors.amber,
+                                fontSize: ScreenConfig.scaledFontSize(
+                                    0.75)), // Text style inside chip
                           ),
                         )
                         .toList(),
@@ -60,10 +68,10 @@ class NewsItemListTile extends StatelessWidget with WebViewHelpers{
                 ),
             ],
           ),
-          const SizedBox(height: 5),
+          SizedBox(height: ScreenConfig.scaledHeight(0.007)),
           Text(
             date.toLocal().when(),
-            style: const TextStyle(fontSize: 12),
+            style: TextStyle(fontSize: ScreenConfig.scaledFontSize(0.8)),
           ),
         ],
       ),

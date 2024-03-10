@@ -5,6 +5,7 @@ import 'package:cryptosight/app/features/news/presentation/widgets/news_item_lis
 import 'package:cryptosight/app/features/news/presentation/widgets/region_select_button.dart';
 import 'package:cryptosight/app/features/news/providers/news_provider.dart';
 import 'package:cryptosight/shared/utils/extensions.dart';
+import 'package:cryptosight/shared/utils/screen_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,9 +19,9 @@ class NewsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('News'),
-        titleTextStyle: const TextStyle(
-          fontSize: 24,
+        titleTextStyle: TextStyle(
           fontWeight: FontWeight.w600,
+          fontSize: ScreenConfig.scaledFontSize(1.8),
         ),
         actions: [
           RegionSelectButton(
@@ -41,7 +42,7 @@ class NewsScreen extends ConsumerWidget {
                   .updateFilter(newFilter: filter);
             },
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: ScreenConfig.scaledHeight(0.01)),
           CurrencySelectionChips(
             onSelectionChanged: (selectedCurrencies) {
               ref
@@ -49,7 +50,7 @@ class NewsScreen extends ConsumerWidget {
                   .updateFilter(newCurrencies: selectedCurrencies.join(','));
             },
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: ScreenConfig.scaledHeight(0.01)),
           const Divider(),
           newsState.status == NewsStateStatus.loading
               ? const Center(child: CircularProgressIndicator())

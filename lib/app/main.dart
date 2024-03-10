@@ -1,5 +1,6 @@
 import 'package:cryptosight/app/core/router/app_router.dart';
 import 'package:cryptosight/app/core/router/route_names.dart';
+import 'package:cryptosight/shared/utils/screen_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +16,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScreenConfig.init(context);
+
     return MaterialApp(
       title: 'Crypto Sight',
       debugShowCheckedModeBanner: false,
