@@ -1,4 +1,4 @@
-package com.example.cryptosight
+package com.recepsenoglu.cryptosight
 
 import io.flutter.embedding.android.FlutterActivity
 

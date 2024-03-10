@@ -1,12 +1,12 @@
 import 'package:cryptosight/services/news_api_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../data/models/news_filter_model.dart'; // Update with your actual path
-import '../data/repositories/news_repository.dart'; // Update with your actual path
-import '../domain/notifiers/news_notifier.dart'; // Update with your actual path
+import '../data/models/news_filter_model.dart'; 
+import '../data/repositories/news_repository.dart'; 
+import '../domain/notifiers/news_notifier.dart';
 
 // Provider for ApiService
 final apiServiceProvider = Provider<NewsApiService>((ref) {
-  return NewsApiService(); // Adjust accordingly
+  return NewsApiService();
 });
 
 // Provider for NewsRepository that depends on ApiService

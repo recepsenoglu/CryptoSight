@@ -54,7 +54,6 @@ class NewsNotifier extends StateNotifier<NewsState> {
     }
   }
 
-  // Add a method to refresh news with the current filter settings
   void refreshNews() {
     fetchNewsWithFilters();
   }
@@ -66,7 +65,6 @@ class NewsNotifier extends StateNotifier<NewsState> {
     String newKind = 'news',
   }) {
     final currentState = ref.read(newsFilterProvider);
-    // Create a new filter model by merging existing state with new values
     final updatedFilter = NewsFilterModel(
       filter: newFilter ?? currentState.filter,
       currencies: newCurrencies ?? currentState.currencies,
@@ -76,10 +74,8 @@ class NewsNotifier extends StateNotifier<NewsState> {
 
     if (currentState == updatedFilter) return;
 
-    // Update the state with the new filter
     ref.read(newsFilterProvider.notifier).state = updatedFilter;
 
-    // Optionally, fetch news immediately after updating the filter
     fetchNewsWithFilters();
   }
 }
