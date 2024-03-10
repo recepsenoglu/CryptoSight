@@ -21,6 +21,54 @@ CryptoSight is an in-development Flutter application designed to deliver the lat
 
 Riverpod stands at the core of CryptoSight's state management, chosen for its flexibility, testability, and excellent developer experience. It allows for a clean separation of concerns, making the app's logic more predictable and easier to maintain. Our implementation demonstrates how Riverpod can efficiently handle real-time updates, user interactions, and network states, providing a robust foundation for the app as it grows.
 
+## Folder Structure
+
+The project is organized into the following folders:
+
+```text
+├── lib
+│   ├── app
+│   │   ├── core
+│   │   │   ├── constants
+│   │   │   │   └── app_colors.dart
+│   │   │   └── router
+│   │   │       ├── app_router.dart
+│   │   │       └── route_names.dart
+│   │   ├── features
+│   │   │   └── news
+│   │   │       ├── data
+│   │   │       │   ├── models
+│   │   │       │   │   ├── news_filter_model.dart
+│   │   │       │   │   └── news_model.dart
+│   │   │       │   └── repositories
+│   │   │       │       └── news_repository.dart
+│   │   │       ├── domain
+│   │   │       │   └── notifiers
+│   │   │       │       └── news_notifier.dart
+│   │   │       ├── presentation
+│   │   │       │   ├── news_screen.dart
+│   │   │       │   └── widgets
+│   │   │       │       ├── currency_selection_chips.dart
+│   │   │       │       ├── filter_chips.dart
+│   │   │       │       ├── news_item_list_tile.dart
+│   │   │       │       └── region_select_button.dart
+│   │   │       └── providers
+│   │   │           └── news_provider.dart
+│   │   └── main.dart
+│   ├── services
+│   │   ├── auth_service.dart
+│   │   └── news_api_service.dart
+│   └── shared
+│       ├── utils
+│       │   ├── extensions.dart
+│       │   ├── helper_functions.dart
+│       │   ├── screen_config.dart
+│       │   ├── validators.dart
+│       │   └── webview_helpers.dart
+│       └── widgets
+```
+
+
 ## Contributing
 
 CryptoSight is open for contributions. Whether it's feature requests, bug fixes, or code contributions, feel free to make a pull request or open an issue.
