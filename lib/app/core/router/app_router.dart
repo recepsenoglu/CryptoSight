@@ -1,17 +1,18 @@
 import 'package:cryptosight/app/features/news/presentation/news_screen.dart';
+import 'package:cryptosight/app/navigation/main_navigation.dart';
 import 'package:flutter/material.dart';
 
 import 'route_names.dart';
 
-
 class AppRouter {
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case RouteNames.initial:
         return MaterialPageRoute(builder: (_) => const NewsScreen());
+      case RouteNames.mainNavigation:
+        return MaterialPageRoute(builder: (_) => const MainNavigationScreen());
 
       default:
         return _errorRoute();

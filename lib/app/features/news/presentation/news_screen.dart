@@ -18,6 +18,7 @@ class NewsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('News'),
         titleTextStyle: TextStyle(
           fontWeight: FontWeight.w600,
