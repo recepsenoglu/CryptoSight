@@ -23,3 +23,43 @@ extension DateTimeExtension on DateTime {
     }
   }
 }
+
+extension NumExtension on num {
+  String toCurrencyString() {
+    if (this >= 1000000000000) {
+      return '${(this / 1000000000000).toStringAsFixed(1)}T';
+    } else if (this >= 1000000000) {
+      return '${(this / 1000000000).toStringAsFixed(1)}B';
+    } else if (this >= 1000000) {
+      return '${(this / 1000000).toStringAsFixed(1)}M';
+    } else if (this >= 1000) {
+      return '${(this / 1000).toStringAsFixed(1)}K';
+    } else {
+      return toStringAsFixed(2);
+    }
+  }
+}
+
+extension PriceFormatter on double {
+  String formatCoinPrice() {
+    int decimalPlaces;
+    if (this >= 1) {
+      decimalPlaces = 2;
+    } else {
+      decimalPlaces = 2;
+      double temp = this;
+      while (temp < 1) {
+        temp *= 10;
+        decimalPlaces++;
+      }
+      decimalPlaces = decimalPlaces > 8 ? 8 : decimalPlaces;
+    }
+
+    String formattedNumber = toStringAsFixed(decimalPlaces);
+    formattedNumber = formattedNumber.replaceAll(RegExp(r'([.]*0+)(?!.*\d)'), '');
+
+    return formattedNumber;
+  }
+}
+
+
