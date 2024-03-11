@@ -34,4 +34,14 @@ class MarketApiService {
       throw Exception('Failed to load market cap: ${e.toString()}');
     }
   }
+
+  Future<dynamic> fetchCoinData(String coinId) async {
+    final String endpoint = 'coins/$coinId';
+    try {
+      final response = await _dio.get(endpoint);
+      return response.data; // Access the response data
+    } on Error catch (e) {
+      throw Exception('Failed to load coin data for $coinId: ${e.toString()}');
+    }
+  }
 }

@@ -1,4 +1,5 @@
-import 'package:cryptosight/app/features/news/presentation/news_screen.dart';
+import 'package:cryptosight/app/features/coin_detail/presentation/coin_detail_screen.dart';
+import 'package:cryptosight/app/features/market_cap/data/models/coin_market_data_model.dart';
 import 'package:cryptosight/app/navigation/main_navigation.dart';
 import 'package:flutter/material.dart';
 
@@ -10,9 +11,11 @@ class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case RouteNames.initial:
-        return MaterialPageRoute(builder: (_) => const NewsScreen());
+        return MaterialPageRoute(builder: (_) => const MainNavigationScreen());
       case RouteNames.mainNavigation:
         return MaterialPageRoute(builder: (_) => const MainNavigationScreen());
+      case RouteNames.coinDetail:
+        return MaterialPageRoute(builder: (_) =>  CoinDetailScreen(settings.arguments as CoinMarketDataModel));
 
       default:
         return _errorRoute();

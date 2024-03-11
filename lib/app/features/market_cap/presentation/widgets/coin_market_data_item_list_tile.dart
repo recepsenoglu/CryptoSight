@@ -1,3 +1,5 @@
+import 'package:cryptosight/app/core/router/app_router.dart';
+import 'package:cryptosight/app/core/router/route_names.dart';
 import 'package:cryptosight/app/features/market_cap/data/models/coin_market_data_model.dart';
 import 'package:cryptosight/shared/utils/extensions.dart';
 import 'package:cryptosight/shared/utils/screen_config.dart';
@@ -11,6 +13,9 @@ class CoinMarketDataItemListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: () {
+        AppRouter.navigateTo(RouteNames.coinDetail, arguments: coin);
+      },
       contentPadding: ScreenConfig.symmetricDynamicPadding(0.04, 0.005),
       title: Row(
         children: [
@@ -88,7 +93,6 @@ class CoinMarketDataItemListTile extends StatelessWidget {
           ),
         ],
       ),
-      onTap: () {},
     );
   }
 }
