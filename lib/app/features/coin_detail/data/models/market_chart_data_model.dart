@@ -1,9 +1,13 @@
+enum MarketChartDataType { prices, marketCaps, totalVolumes }
+
 class MarketChartDataModel {
+  MarketChartDataType type;
   final List<List<num>> prices;
-  final List<List<num>>? marketCaps;
-  final List<List<num>>? totalVolumes;
+  final List<List<num>> marketCaps;
+  final List<List<num>> totalVolumes;
 
   MarketChartDataModel({
+    this.type = MarketChartDataType.prices,
     required this.prices,
     required this.marketCaps,
     required this.totalVolumes,
@@ -20,17 +24,18 @@ class MarketChartDataModel {
     );
   }
 
-  List<Map<String, num>> get pricesMap {
-    return prices.map((e) => {'date': e[0], 'price': e[1]}).toList();
+  List<List<num>> get data {
+    switch (type) {
+      case MarketChartDataType.prices:
+        return prices;
+      case MarketChartDataType.marketCaps:
+        return marketCaps;
+      case MarketChartDataType.totalVolumes:
+        return totalVolumes;
+    }
   }
 
-  List<Map<String, num>>? get marketCapsMap {
-    return marketCaps?.map((e) => {'date': e[0], 'marketCap': e[1]}).toList();
-  }
-
-  List<Map<String, num>>? get totalVolumesMap {
-    return totalVolumes
-        ?.map((e) => {'date': e[0], 'totalVolume': e[1]})
-        .toList();
+  void setType(MarketChartDataType type) {
+    this.type = type;
   }
 }

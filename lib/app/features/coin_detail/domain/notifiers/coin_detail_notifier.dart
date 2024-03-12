@@ -77,4 +77,9 @@ class CoinDetailNotifier extends StateNotifier<CoinDetailState> {
       state = CoinDetailState.error('Error fetching coin market chart data');
     }
   }
+
+  void setMarketChartDataType(MarketChartDataType type) {
+    state.marketChartData!.setType(type);
+    state = CoinDetailState.success(state.coinDetail!, state.marketChartData);
+  }
 }

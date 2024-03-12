@@ -39,6 +39,7 @@ dependencies:
   flutter_dotenv: ^5.1.0
   flutter_riverpod: ^2.4.10
   webview_flutter: ^4.7.0
+  fl_chart: ^0.66.2
 
 dev_dependencies:
   flutter_test:

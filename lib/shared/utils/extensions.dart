@@ -25,6 +25,10 @@ extension DateTimeExtension on DateTime {
 }
 
 extension NumExtension on num {
+  String fromTimestamp() {
+    return DateTime.fromMillisecondsSinceEpoch(toInt()).toFormattedString();
+  }
+
   String toCurrency() {
     if (this >= 1000) {
       List<String> parts = toString().split('.');
