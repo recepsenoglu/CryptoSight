@@ -36,9 +36,11 @@ class _WebViewScreenState extends State<WebViewScreen> {
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (int progress) {
-            setState(() {
-              this.progress = progress;
-            });
+            if (mounted) {
+              setState(() {
+                this.progress = progress;
+              });
+            }
           },
           onPageStarted: (String url) {},
           onPageFinished: (String url) {},

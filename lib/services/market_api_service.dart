@@ -44,4 +44,20 @@ class MarketApiService {
       throw Exception('Failed to load coin data for $coinId: ${e.toString()}');
     }
   }
+
+  Future<dynamic> fetchCoinMarketChart(String coinId, int days) async {
+    final String endpoint = 'coins/$coinId/market_chart';
+    final Map<String, dynamic> queryParameters = {
+      'vs_currency': 'usd',
+      'days': days,
+    };
+    try {
+      final response =
+          await _dio.get(endpoint, queryParameters: queryParameters);
+      return response.data; // Access the response data
+    } on Error catch (e) {
+      throw Exception(
+          'Failed to load coin market chart for $coinId: ${e.toString()}');
+    }
+  }
 }

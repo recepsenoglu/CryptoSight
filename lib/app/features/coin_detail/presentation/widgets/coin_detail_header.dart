@@ -70,7 +70,7 @@ class CoinDetailHeader extends StatelessWidget {
                           color: Colors.white,
                         ),
                         Text(
-                          '${coinPriceChangePercentage24h.formatCoinPrice()}% ',
+                          '${coinPriceChangePercentage24h.toStringAsFixed(2)}% ',
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: ScreenConfig.scaledFontSize(0.75),
