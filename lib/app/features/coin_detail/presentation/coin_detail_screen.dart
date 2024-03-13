@@ -51,7 +51,6 @@ class CoinDetailScreen extends ConsumerWidget {
                 child: SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(height: ScreenConfig.scaledHeight(0.01)),
                   MarketDataLineChartSection(
                     marketChartState: marketChartState,
                     onMarketDataTypeSelectionUpdated:

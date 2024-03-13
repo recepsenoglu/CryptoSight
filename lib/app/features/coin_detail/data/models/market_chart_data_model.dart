@@ -23,22 +23,6 @@ class MarketChartModel {
     );
   }
 
-  static MarketChartDataGranularity timeIntervalToGranularity(
-      MarketChartTimeInterval timeInterval) {
-    switch (timeInterval) {
-      case MarketChartTimeInterval.all:
-      case MarketChartTimeInterval.oneYear:
-      case MarketChartTimeInterval.sixMonths:
-        return MarketChartDataGranularity.daily;
-      case MarketChartTimeInterval.threeMonths:
-      case MarketChartTimeInterval.oneMonth:
-      case MarketChartTimeInterval.sevenDays:
-        return MarketChartDataGranularity.hourly;
-      case MarketChartTimeInterval.oneDay:
-        return MarketChartDataGranularity.fiveMinutely;
-    }
-  }
-
   void setType(MarketChartDataType type) {
     this.type = type;
   }
@@ -54,6 +38,22 @@ class MarketChartModel {
   bool hasGranularity(MarketChartDataGranularity granularity) {
     return _marketChartData
         .any((element) => element.granularity == granularity);
+  }
+
+  static MarketChartDataGranularity timeIntervalToGranularity(
+      MarketChartTimeInterval timeInterval) {
+    switch (timeInterval) {
+      case MarketChartTimeInterval.all:
+      case MarketChartTimeInterval.oneYear:
+      case MarketChartTimeInterval.sixMonths:
+        return MarketChartDataGranularity.daily;
+      case MarketChartTimeInterval.threeMonths:
+      case MarketChartTimeInterval.oneMonth:
+      case MarketChartTimeInterval.sevenDays:
+        return MarketChartDataGranularity.hourly;
+      case MarketChartTimeInterval.oneDay:
+        return MarketChartDataGranularity.fiveMinutely;
+    }
   }
 }
 

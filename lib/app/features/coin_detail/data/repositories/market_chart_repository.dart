@@ -20,9 +20,11 @@ class MarketChartRepository {
             MarketChartModel.timeIntervalToGranularity(timeInterval);
         marketChartModel.addMarketChartData(marketChartData);
       }
+      
       marketChartModel.setTimeInterval(timeInterval);
       return marketChartModel;
     }
+
     final marketChartData = await _fetchCoinMarketChartData(id, timeInterval);
     marketChartData.granularity = _calculateGranularity(timeInterval);
     final marketChart = MarketChartModel(
