@@ -7,35 +7,45 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum CoinDetailStateStatus { loading, success, error }
 
+enum MarketChartTimeInterval {
+  all,
+  oneYear,
+  sixMonths,
+  threeMonths,
+  oneMonth,
+  sevenDays,
+  oneDay
+}
+
 class CoinDetailState {
   final CoinDetailStateStatus status;
-  final MarketChartDataModel? marketChartData;
+  final MarketChartModel? marketChart;
   final CoinDetailModel? coinDetail;
   final String? errorMessage;
 
   CoinDetailState._(
       {required this.status,
-      this.marketChartData,
+      this.marketChart,
       this.coinDetail,
       this.errorMessage});
 
   factory CoinDetailState.loading() => CoinDetailState._(
       status: CoinDetailStateStatus.loading,
-      marketChartData: null,
+      marketChart: null,
       coinDetail: null,
       errorMessage: null);
 
   factory CoinDetailState.success(CoinDetailModel coinDetail,
-          [MarketChartDataModel? marketChartData]) =>
+          [MarketChartModel? marketChart]) =>
       CoinDetailState._(
           status: CoinDetailStateStatus.success,
-          marketChartData: marketChartData,
+          marketChart: marketChart,
           coinDetail: coinDetail,
           errorMessage: null);
 
   factory CoinDetailState.error(String message) => CoinDetailState._(
       status: CoinDetailStateStatus.error,
-      marketChartData: null,
+      marketChart: null,
       coinDetail: null,
       errorMessage: message);
 }
@@ -52,7 +62,7 @@ class CoinDetailNotifier extends StateNotifier<CoinDetailState> {
 
   Future<void> init() async {
     await fetchCoinDetail(coinId);
-    await fetchCoinMarketChart(coinId, 1);
+    await fetchCoinMarketChart(coinId, MarketChartTimeInterval.oneMonth);
   }
 
   Future<void> fetchCoinDetail(String id) async {
@@ -67,10 +77,12 @@ class CoinDetailNotifier extends StateNotifier<CoinDetailState> {
     }
   }
 
-  Future<void> fetchCoinMarketChart(String id, int days) async {
+  Future<void> fetchCoinMarketChart(
+      String id, MarketChartTimeInterval interval) async {
     try {
-      final marketChartData = await repository.getCoinMarketChart(id, days);
-      state = CoinDetailState.success(state.coinDetail!, marketChartData);
+      final marketChart =
+          await repository.getCoinMarketChart(id, interval, state.marketChart);
+      state = CoinDetailState.success(state.coinDetail!, marketChart);
     } catch (e) {
       log('Error fetching coin market chart data for $id',
           error: e, stackTrace: StackTrace.current);
@@ -79,7 +91,12 @@ class CoinDetailNotifier extends StateNotifier<CoinDetailState> {
   }
 
   void setMarketChartDataType(MarketChartDataType type) {
-    state.marketChartData!.setType(type);
-    state = CoinDetailState.success(state.coinDetail!, state.marketChartData);
+    state.marketChart!.setType(type);
+    state = CoinDetailState.success(state.coinDetail!, state.marketChart);
+  }
+
+  Future<void> onMarketChartTimeIntervalChanged(
+      MarketChartTimeInterval interval) async {
+    await fetchCoinMarketChart(coinId, interval);
   }
 }

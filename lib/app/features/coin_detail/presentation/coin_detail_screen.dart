@@ -1,4 +1,5 @@
 import 'package:cryptosight/app/features/coin_detail/data/models/market_chart_data_model.dart';
+import 'package:cryptosight/app/features/coin_detail/domain/notifiers/coin_detail_notifier.dart';
 import 'package:cryptosight/app/features/coin_detail/presentation/widgets/coin_about_text.dart';
 import 'package:cryptosight/app/features/coin_detail/presentation/widgets/coin_detail_header.dart';
 import 'package:cryptosight/app/features/coin_detail/presentation/widgets/coin_detail_value_list.dart';
@@ -40,12 +41,24 @@ class CoinDetailScreen extends ConsumerWidget {
                 children: [
                   SizedBox(height: ScreenConfig.scaledHeight(0.01)),
                   MarketDataLineChartSection(
-                    data: coinDetailState.marketChartData?.data,
+                    status: coinDetailState.status,
+                    data: coinDetailState.marketChart?.marketChartData.getData(
+                      coinDetailState.marketChart?.type ??
+                          MarketChartDataType.prices,
+                      coinDetailState.marketChart?.timeInterval ??
+                          MarketChartTimeInterval.oneMonth,
+                    ),
                     onMarketDataTypeSelectionUpdated: (int index) {
                       ref
                           .read(coinDetailNotifierProvider(coin.id).notifier)
                           .setMarketChartDataType(
                               MarketChartDataType.values[index]);
+                    },
+                    onTimeIntervalSelectionUpdated: (int index) {
+                      ref
+                          .read(coinDetailNotifierProvider(coin.id).notifier)
+                          .onMarketChartTimeIntervalChanged(
+                              MarketChartTimeInterval.values[index]);
                     },
                   ),
                   SizedBox(height: ScreenConfig.scaledHeight(0.04)),
