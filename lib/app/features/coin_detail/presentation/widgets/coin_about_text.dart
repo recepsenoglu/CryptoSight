@@ -31,7 +31,7 @@ class CoinAboutText extends StatelessWidget {
           ),
           SizedBox(height: ScreenConfig.scaledHeight(0.01)),
           Text(
-            coinDetailState.coinDetail!.description,
+            coinDetailState.coinDetail?.description ?? '',
             style: TextStyle(
               fontSize: ScreenConfig.scaledFontSize(0.85),
             ),

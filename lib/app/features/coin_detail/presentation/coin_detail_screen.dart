@@ -1,10 +1,11 @@
 import 'package:cryptosight/app/features/coin_detail/data/models/market_chart_data_model.dart';
-import 'package:cryptosight/app/features/coin_detail/domain/notifiers/coin_detail_notifier.dart';
+import 'package:cryptosight/app/features/coin_detail/domain/notifiers/market_chart_notifier.dart';
 import 'package:cryptosight/app/features/coin_detail/presentation/widgets/coin_about_text.dart';
 import 'package:cryptosight/app/features/coin_detail/presentation/widgets/coin_detail_header.dart';
 import 'package:cryptosight/app/features/coin_detail/presentation/widgets/coin_detail_value_list.dart';
 import 'package:cryptosight/app/features/coin_detail/presentation/widgets/market_data_line_chart_section.dart';
 import 'package:cryptosight/app/features/coin_detail/providers/coin_detail_provider.dart';
+import 'package:cryptosight/app/features/coin_detail/providers/market_chart_provider.dart';
 import 'package:cryptosight/app/features/market_cap/data/models/coin_market_data_model.dart';
 import 'package:cryptosight/shared/utils/screen_config.dart';
 import 'package:flutter/material.dart';
@@ -18,11 +19,22 @@ class CoinDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final coinDetailState = ref.watch(coinDetailNotifierProvider(coin.id));
+    final marketChartState = ref.watch(marketChartNotifierProvider(coin.id));
+
+    if (marketChartState.status == MarketChartStateStatus.error ||
+        marketChartState.status == MarketChartStateStatus.errorLoading) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content:
+                  Text(marketChartState.errorMessage ?? 'An error occurred')),
+        );
+      });
+    }
 
     return Scaffold(
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-      ),
+      appBar: AppBar(scrolledUnderElevation: 0),
       body: Padding(
         padding: ScreenConfig.symmetricDynamicPadding(0.04, 0.005),
         child: Column(
@@ -41,24 +53,24 @@ class CoinDetailScreen extends ConsumerWidget {
                 children: [
                   SizedBox(height: ScreenConfig.scaledHeight(0.01)),
                   MarketDataLineChartSection(
-                    status: coinDetailState.status,
-                    data: coinDetailState.marketChart?.marketChartData.getData(
-                      coinDetailState.marketChart?.type ??
-                          MarketChartDataType.prices,
-                      coinDetailState.marketChart?.timeInterval ??
-                          MarketChartTimeInterval.oneMonth,
-                    ),
-                    onMarketDataTypeSelectionUpdated: (int index) {
+                    marketChartState: marketChartState,
+                    onMarketDataTypeSelectionUpdated:
+                        (MarketChartDataType marketChartDataType) {
                       ref
-                          .read(coinDetailNotifierProvider(coin.id).notifier)
-                          .setMarketChartDataType(
-                              MarketChartDataType.values[index]);
+                          .read(marketChartNotifierProvider(coin.id).notifier)
+                          .setMarketChartDataType(marketChartDataType);
                     },
-                    onTimeIntervalSelectionUpdated: (int index) {
+                    onTimeIntervalSelectionUpdated:
+                        (MarketChartTimeInterval marketChartTimeInterval) {
                       ref
-                          .read(coinDetailNotifierProvider(coin.id).notifier)
+                          .read(marketChartNotifierProvider(coin.id).notifier)
                           .onMarketChartTimeIntervalChanged(
-                              MarketChartTimeInterval.values[index]);
+                              marketChartTimeInterval);
+                    },
+                    onRetry: () {
+                      ref
+                          .read(marketChartNotifierProvider(coin.id).notifier)
+                          .reTryFetch();
                     },
                   ),
                   SizedBox(height: ScreenConfig.scaledHeight(0.04)),

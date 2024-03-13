@@ -1,4 +1,4 @@
-import 'package:cryptosight/app/features/coin_detail/domain/notifiers/coin_detail_notifier.dart';
+import 'package:cryptosight/app/features/coin_detail/domain/notifiers/market_chart_notifier.dart';
 
 enum MarketChartDataType { prices, marketCaps, totalVolumes }
 
@@ -102,19 +102,19 @@ class MarketChartDataModel {
   Duration timeIntervalToDuration(MarketChartTimeInterval timeInterval) {
     switch (timeInterval) {
       case MarketChartTimeInterval.all:
-        return Duration(days: 365 * 10);
+        return const Duration(days: 365 * 10);
       case MarketChartTimeInterval.oneYear:
-        return Duration(days: 365);
+        return const Duration(days: 365);
       case MarketChartTimeInterval.sixMonths:
-        return Duration(days: 30 * 6);
+        return const Duration(days: 30 * 6);
       case MarketChartTimeInterval.threeMonths:
-        return Duration(days: 30 * 3);
+        return const Duration(days: 30 * 3);
       case MarketChartTimeInterval.oneMonth:
-        return Duration(days: 30);
+        return const Duration(days: 30);
       case MarketChartTimeInterval.sevenDays:
-        return Duration(days: 7);
+        return const Duration(days: 7);
       case MarketChartTimeInterval.oneDay:
-        return Duration(days: 1);
+        return const Duration(days: 1);
     }
   }
 }
