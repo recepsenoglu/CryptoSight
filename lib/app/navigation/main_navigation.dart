@@ -1,6 +1,7 @@
 // lib/app/navigation/main_navigation.dart
 
 import 'package:cryptosight/app/features/market_cap/presentation/market_cap_screen.dart';
+import 'package:cryptosight/app/features/portfolio/presentation/portfolio_screen.dart';
 import 'package:cryptosight/shared/utils/screen_config.dart';
 import 'package:flutter/material.dart';
 import '../features/news/presentation/news_screen.dart';
@@ -13,13 +14,12 @@ class MainNavigationScreen extends StatefulWidget {
 }
 
 class _MainNavigationState extends State<MainNavigationScreen> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   static const List<Widget> _widgetOptions = <Widget>[
     NewsScreen(),
     MarketCapScreen(),
-    NewsScreen(),
-    NewsScreen(),
+    PortfolioScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -47,10 +47,6 @@ class _MainNavigationState extends State<MainNavigationScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.account_balance_wallet),
             label: 'Portfolio',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
           ),
         ],
         currentIndex: _selectedIndex,

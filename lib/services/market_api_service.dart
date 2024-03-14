@@ -19,11 +19,11 @@ class MarketApiService {
 
     final Map<String, dynamic> queryParameters = {
       'vs_currency': 'usd',
-      'order': 'market_cap_desc',
-      'per_page': 10,
-      'page': 1,
-      'sparkline': false,
-      'price_change_percentage': '1h,24h,7d',
+      // 'order': 'market_cap_desc',
+      // 'per_page': 10,
+      // 'page': 1,
+      // 'sparkline': false,
+      // 'price_change_percentage': '1h,24h,7d',
     };
 
     try {
