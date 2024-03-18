@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cryptosight/app/features/market_cap/data/models/coin_simple_data_model.dart';
 import 'package:cryptosight/app/features/portfolio/data/models/portfolio_model.dart';
 import 'package:cryptosight/app/features/portfolio/data/repositories/portfolio_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -102,4 +103,9 @@ class PortfolioNotifier extends StateNotifier<PortfolioState> {
     }
   }
 
+  void calculateAssets(List<CoinSimpleDataModel> market) {
+    log('Calculating assets');
+    state.portfolio!.calculateAssets(market);
+    state = PortfolioState.success(state.portfolio!);
+  }
 }

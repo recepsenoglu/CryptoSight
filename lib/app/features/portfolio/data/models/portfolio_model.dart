@@ -16,6 +16,8 @@ class PortfolioModel extends HiveObject {
   @HiveField(2)
   final List<TransactionModel> transactions;
 
+  final List<AssetModel> assets = [];
+
   PortfolioModel({
     required this.name,
     required this.createdAt,
@@ -31,6 +33,16 @@ class PortfolioModel extends HiveObject {
     });
   }
 
+  double get totalProfit {
+    return assets.fold(0, (previousValue, element) {
+      return previousValue + element.profit;
+    });
+  }
+
+  double get totalProfitPercentage {
+    return (totalProfit / totalInvestment) * 100;
+  }
+
   double getCoinAmount(String coinId) {
     return transactions.where((element) => element.coinId == coinId).fold(0,
         (previousValue, element) {
@@ -41,9 +53,7 @@ class PortfolioModel extends HiveObject {
     });
   }
 
-  List<AssetModel> getAssets(List<CoinSimpleDataModel> market) {
-    List<AssetModel> assets = [];
-
+  void calculateAssets(List<CoinSimpleDataModel> market) {
     for (var transaction in transactions) {
       log('Transactions: \n');
       log('Coin id: ${transaction.coinId}');
@@ -53,7 +63,6 @@ class PortfolioModel extends HiveObject {
       log('Date: ${transaction.transactionDate}');
       log('Created at: ${transaction.createdAt}');
       log('-------------------');
-
 
       if (assets.any((element) => element.coin.id == transaction.coinId)) {
         var asset = assets
@@ -91,8 +100,6 @@ class PortfolioModel extends HiveObject {
         }
       }
     }
-
-    return assets;
   }
 
   PortfolioModel copyWith(

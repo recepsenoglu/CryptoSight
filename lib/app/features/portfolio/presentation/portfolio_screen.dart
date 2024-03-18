@@ -33,6 +33,13 @@ class PortfolioScreen extends ConsumerWidget {
       );
     }
 
+    if (coinDataState.status == CoinDataStateStatus.success &&
+        portfolioState.status == PortfolioStateStatus.success &&
+        portfolioState.portfolio!.transactions.isNotEmpty &&
+        portfolioState.portfolio!.assets.isEmpty) {
+      portfolioState.portfolio!.calculateAssets(coinDataState.coinData!);
+    }
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -54,34 +61,39 @@ class PortfolioScreen extends ConsumerWidget {
                 })
               : Padding(
                   padding: ScreenConfig.horizontalDynamicPadding(0.04),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      NameAndSettings(
-                        portfolioState: portfolioState,
-                        ref: ref,
-                      ),
-                      TotalBalanceAndChartSection(
-                          portfolioState: portfolioState),
-                      SizedBox(height: ScreenConfig.scaledHeight(0.02)),
-                      AssetsList(
-                        portfolioState: portfolioState,
-                        coinDataState: coinDataState,
-                      ),
-                      SizedBox(height: ScreenConfig.scaledHeight(0.02)),
-                      AddCoinButton(
-                        coinList: coinDataState.coinData ?? [],
-                        calculateUserCoinAmount: (coin) {
-                          return portfolioState.portfolio!
-                              .getCoinAmount(coin.id);
-                        },
-                        onAddCoin: () {
-                          ref
-                              .read(portfolioNotifierProvider.notifier)
-                              .getPortfolio();
-                        },
-                      ),
-                    ],
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        NameAndSettings(
+                          portfolioState: portfolioState,
+                          ref: ref,
+                        ),
+                        TotalBalanceAndChartSection(
+                            portfolioState: portfolioState),
+                        SizedBox(height: ScreenConfig.scaledHeight(0.02)),
+                        AssetsList(
+                          portfolioState: portfolioState,
+                          coinDataState: coinDataState,
+                        ),
+                        SizedBox(height: ScreenConfig.scaledHeight(0.02)),
+                        AddCoinButton(
+                          coinList: coinDataState.coinData ?? [],
+                          calculateUserCoinAmount: (coin) {
+                            return portfolioState.portfolio!
+                                .getCoinAmount(coin.id);
+                          },
+                          onAddCoin: () async {
+                            await ref
+                                .read(portfolioNotifierProvider.notifier)
+                                .getPortfolio();
+                            ref
+                                .read(portfolioNotifierProvider.notifier)
+                                .calculateAssets(coinDataState.coinData!);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
     );
@@ -208,21 +220,31 @@ class AssetsList extends StatelessWidget {
       );
     }
 
-    if (coinDataState.status == CoinDataStateStatus.loading) {
+    if (coinDataState.status == CoinDataStateStatus.loading ||
+        coinDataState.status == CoinDataStateStatus.initial) {
       return const Center(
         child: CircularProgressIndicator(),
       );
     }
 
-    List<AssetModel> assets =
-        portfolioState.portfolio!.getAssets(coinDataState.coinData!);
+    if (coinDataState.status == CoinDataStateStatus.error) {
+      return Center(
+        child: Text(
+          'Error loading assets.',
+          style: TextStyle(
+            fontSize: ScreenConfig.scaledFontSize(1),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      );
+    }
 
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: assets.length,
+      itemCount: portfolioState.portfolio!.assets.length,
       itemBuilder: (context, index) {
-        final asset = assets[index];
+        final asset = portfolioState.portfolio!.assets[index];
 
         return Card(
           margin: EdgeInsets.only(bottom: ScreenConfig.scaledHeight(0.02)),
@@ -349,22 +371,71 @@ class TotalBalanceAndChartSection extends StatelessWidget {
         color: Colors.grey.shade800,
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Text(
-            'Total balance:',
-            style: TextStyle(
-              fontSize: ScreenConfig.scaledFontSize(0.9),
-              color: Colors.grey.shade400,
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Total balance:',
+                style: TextStyle(
+                  fontSize: ScreenConfig.scaledFontSize(0.9),
+                  color: Colors.grey.shade400,
+                ),
+              ),
+              Text(
+                '\$ ${portfolioState.portfolio!.totalInvestment.toStringAsFixed(2)}',
+                style: TextStyle(
+                  fontSize: ScreenConfig.scaledFontSize(1.8),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
-          Text(
-            '\$ ${portfolioState.portfolio!.totalInvestment.toStringAsFixed(2)}',
-            style: TextStyle(
-              fontSize: ScreenConfig.scaledFontSize(1.8),
-              fontWeight: FontWeight.w600,
-            ),
+          const Spacer(),
+          Column(
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    portfolioState.portfolio!.totalProfit > 0
+                        ? Icons.arrow_drop_up
+                        : portfolioState.portfolio!.totalProfit < 0
+                            ? Icons.arrow_drop_down
+                            : Icons.remove,
+                    size: ScreenConfig.scaledHeight(0.02),
+                    color: portfolioState.portfolio!.totalProfit > 0
+                        ? Colors.green
+                        : portfolioState.portfolio!.totalProfit < 0
+                            ? Colors.red
+                            : Colors.grey.shade400,
+                  ),
+                  Text(
+                    '${portfolioState.portfolio!.totalProfitPercentage.toStringAsFixed(2)}%',
+                    style: TextStyle(
+                      fontSize: ScreenConfig.scaledFontSize(0.9),
+                      color: portfolioState.portfolio!.totalProfit > 0
+                          ? Colors.green
+                          : portfolioState.portfolio!.totalProfit < 0
+                              ? Colors.red
+                              : Colors.grey.shade400,
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                '\$ ${portfolioState.portfolio!.totalProfit.toStringAsFixed(2)}',
+                style: TextStyle(
+                  fontSize: ScreenConfig.scaledFontSize(0.9),
+                  fontWeight: FontWeight.w600,
+                  color: portfolioState.portfolio!.totalProfit > 0
+                      ? Colors.green
+                      : portfolioState.portfolio!.totalProfit < 0
+                          ? Colors.red
+                          : Colors.grey.shade400,
+                ),
+              ),
+            ],
           ),
         ],
       ),
