@@ -1,3 +1,5 @@
+import 'package:cryptosight/app/features/market_cap/data/models/coin_simple_data_model.dart';
+
 class CoinMarketDataModel {
   final String id;
   final String symbol;
@@ -71,7 +73,8 @@ class CoinMarketDataModel {
       priceChange24h: json['price_change_24h'].toDouble(),
       priceChangePercentage24h: json['price_change_percentage_24h'].toDouble(),
       marketCapChange24h: json['market_cap_change_24h']?.toDouble(),
-      marketCapChangePercentage24h: json['market_cap_change_percentage_24h']?.toDouble(),
+      marketCapChangePercentage24h:
+          json['market_cap_change_percentage_24h']?.toDouble(),
       circulatingSupply: json['circulating_supply'].toDouble(),
       totalSupply: json['total_supply']?.toDouble(),
       maxSupply: json['max_supply']?.toDouble(),
@@ -83,6 +86,16 @@ class CoinMarketDataModel {
       atlDate: json['atl_date'],
       roi: json['roi'] as Map<String, dynamic>?,
       lastUpdated: json['last_updated'],
+    );
+  }
+
+  CoinSimpleDataModel toSimpleDataModel() {
+    return CoinSimpleDataModel(
+      id: id,
+      name: name,
+      symbol: symbol,
+      image: image,
+      currentPrice: currentPrice,
     );
   }
 }

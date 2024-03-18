@@ -5,9 +5,16 @@ extension StringExtension on String {
 }
 
 extension DateTimeExtension on DateTime {
-  String toFormattedString() {
-    return '$day/$month/$year - $hour:$minute';
-  }
+String toFormattedString() {
+  String paddedDay = day.toString().padLeft(2, '0');
+  String paddedMonth = month.toString().padLeft(2, '0');
+  String paddedYear = year.toString();
+  String paddedHour = hour.toString().padLeft(2, '0');
+  String paddedMinute = minute.toString().padLeft(2, '0');
+
+  return '$paddedDay/$paddedMonth/$paddedYear - $paddedHour:$paddedMinute';
+}
+
 
   String when() {
     final now = DateTime.now();

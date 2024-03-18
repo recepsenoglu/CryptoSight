@@ -1,4 +1,5 @@
 import 'package:cryptosight/app/features/market_cap/data/models/coin_market_data_model.dart';
+import 'package:cryptosight/app/features/market_cap/data/models/coin_simple_data_model.dart';
 import 'package:cryptosight/services/market_api_service.dart';
 
 class MarketCapRepository {
@@ -10,5 +11,11 @@ class MarketCapRepository {
     final rawData = await apiService.fetchMarketCap();
     return List<CoinMarketDataModel>.from(
         rawData.map((json) => CoinMarketDataModel.fromJson(json)));
+  }
+
+  Future<List<CoinSimpleDataModel>> getSimpleMarketData() async {
+    final rawData = await apiService.fetchMarketCap();
+    return List<CoinSimpleDataModel>.from(
+        rawData.map((json) => CoinSimpleDataModel.fromJson(json)));
   }
 }

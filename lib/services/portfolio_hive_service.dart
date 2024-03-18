@@ -12,6 +12,7 @@ class PortfolioHiveService {
   void _registerAdapter() {
     Hive.registerAdapter(PortfolioModelAdapter());
     Hive.registerAdapter(TransactionModelAdapter());
+    Hive.registerAdapter(TransactionTypeAdapter());
   }
 
   Future<void> addPortfolio(PortfolioModel portfolio) async {
@@ -32,5 +33,12 @@ class PortfolioHiveService {
   Future<void> deletePortfolio(int index) async {
     final box = await Hive.openBox<PortfolioModel>(boxName);
     await box.deleteAt(index);
+  }
+
+  Future<void> addTransaction(int portfolioIndex, TransactionModel transaction) async {
+    final box = await Hive.openBox<PortfolioModel>(boxName);
+    final portfolio = box.getAt(portfolioIndex);
+    portfolio?.transactions.add(transaction);
+    await box.putAt(portfolioIndex, portfolio!);
   }
 }

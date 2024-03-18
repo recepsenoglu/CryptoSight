@@ -17,5 +17,5 @@ final portfolioRepositoryProvider = Provider<PortfolioRepository>((ref) {
 
 final portfolioNotifierProvider = StateNotifierProvider<PortfolioNotifier, PortfolioState>((ref) {
   final repository = ref.watch(portfolioRepositoryProvider);
-  return PortfolioNotifier(ref, repository: repository);
+  return PortfolioNotifier(repository: repository);
 });

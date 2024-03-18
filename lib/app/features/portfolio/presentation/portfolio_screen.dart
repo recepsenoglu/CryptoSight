@@ -1,8 +1,18 @@
+import 'dart:developer';
+
+import 'package:cryptosight/app/core/router/app_router.dart';
+import 'package:cryptosight/app/core/router/route_names.dart';
+import 'package:cryptosight/app/features/market_cap/data/models/coin_simple_data_model.dart';
+import 'package:cryptosight/app/features/portfolio/data/models/asset_model.dart';
+import 'package:cryptosight/app/features/portfolio/domain/notifiers/coin_data_notifier.dart';
 import 'package:cryptosight/app/features/portfolio/domain/notifiers/portfolio_notifier.dart';
+import 'package:cryptosight/app/features/portfolio/providers/coin_data_provider.dart';
 import 'package:cryptosight/app/features/portfolio/providers/portfolio_provider.dart';
+import 'package:cryptosight/shared/utils/extensions.dart';
 import 'package:cryptosight/shared/utils/screen_config.dart';
 import 'package:cryptosight/shared/widgets/portfolio_name_popup.dart';
 import 'package:cryptosight/shared/widgets/portfolio_settings_bottom_sheet.dart';
+import 'package:cryptosight/shared/widgets/select_coin_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,6 +22,16 @@ class PortfolioScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final portfolioState = ref.watch(portfolioNotifierProvider);
+
+    final coinDataState = ref.watch(coinDataNotifierProvider);
+
+    if (portfolioState.status == PortfolioStateStatus.success &&
+        portfolioState.portfolio != null &&
+        coinDataState.status == CoinDataStateStatus.initial) {
+      Future.microtask(
+        () => ref.read(coinDataNotifierProvider.notifier).fetchCoinData(),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -37,45 +57,30 @@ class PortfolioScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            portfolioState.portfolio!.name,
-                            style: TextStyle(
-                              fontSize: ScreenConfig.scaledFontSize(1.2),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.more_vert),
-                            iconSize: ScreenConfig.scaledHeight(0.03),
-                            onPressed: () {
-                              showPortfolioSettings(
-                                context,
-                                portfolioName: portfolioState.portfolio!.name,
-                                onEditName: (String name) {
-                                  ref
-                                      .read(portfolioNotifierProvider.notifier)
-                                      .editPortfolioName(name);
-                                },
-                                onClearCoins: () {},
-                                onDeletePortfolio: () {
-                                  ref
-                                      .read(portfolioNotifierProvider.notifier)
-                                      .deletePortfolio();
-                                },
-                              );
-                            },
-                          ),
-                        ],
+                      NameAndSettings(
+                        portfolioState: portfolioState,
+                        ref: ref,
                       ),
                       TotalBalanceAndChartSection(
                           portfolioState: portfolioState),
                       SizedBox(height: ScreenConfig.scaledHeight(0.02)),
-                      AssetsList(portfolioState: portfolioState),
+                      AssetsList(
+                        portfolioState: portfolioState,
+                        coinDataState: coinDataState,
+                      ),
                       SizedBox(height: ScreenConfig.scaledHeight(0.02)),
-                      const AddCoinButton(),
+                      AddCoinButton(
+                        coinList: coinDataState.coinData ?? [],
+                        calculateUserCoinAmount: (coin) {
+                          return portfolioState.portfolio!
+                              .getCoinAmount(coin.id);
+                        },
+                        onAddCoin: () {
+                          ref
+                              .read(portfolioNotifierProvider.notifier)
+                              .getPortfolio();
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -83,13 +88,82 @@ class PortfolioScreen extends ConsumerWidget {
   }
 }
 
+class NameAndSettings extends StatelessWidget {
+  const NameAndSettings({
+    super.key,
+    required this.portfolioState,
+    required this.ref,
+  });
+
+  final PortfolioState portfolioState;
+  final WidgetRef ref;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          portfolioState.portfolio!.name,
+          style: TextStyle(
+            fontSize: ScreenConfig.scaledFontSize(1.2),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        IconButton(
+          icon: const Icon(Icons.more_vert),
+          iconSize: ScreenConfig.scaledHeight(0.03),
+          onPressed: () {
+            showPortfolioSettings(
+              context,
+              portfolioName: portfolioState.portfolio!.name,
+              onEditName: (String name) {
+                ref
+                    .read(portfolioNotifierProvider.notifier)
+                    .editPortfolioName(name);
+              },
+              onClearCoins: () {
+                ref.read(portfolioNotifierProvider.notifier).clearPortfolio();
+              },
+              onDeletePortfolio: () {
+                ref.read(portfolioNotifierProvider.notifier).deletePortfolio();
+              },
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
 class AddCoinButton extends StatelessWidget {
-  const AddCoinButton({super.key});
+  const AddCoinButton({
+    super.key,
+    required this.coinList,
+    required this.calculateUserCoinAmount,
+    required this.onAddCoin,
+  });
+  final List<CoinSimpleDataModel> coinList;
+  final double Function(CoinSimpleDataModel) calculateUserCoinAmount;
+  final VoidCallback onAddCoin;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
-      onPressed: () {},
+      onPressed: () {
+        showSelectCoinBottomSheet(context, coinList: coinList,
+            onCoinSelected: (coin) {
+          log('Coin selected: ${coin.name}');
+          coin.amount = calculateUserCoinAmount(coin);
+          AppRouter.navigateToAndExpectResult(RouteNames.addTransaction,
+              (result) {
+            log('Transaction added: $result');
+            if (result == true) {
+              onAddCoin();
+            }
+          }, arguments: coin);
+        });
+      },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.amber.shade700,
       ),
@@ -114,9 +188,11 @@ class AssetsList extends StatelessWidget {
   const AssetsList({
     super.key,
     required this.portfolioState,
+    required this.coinDataState,
   });
 
   final PortfolioState portfolioState;
+  final CoinDataState coinDataState;
 
   @override
   Widget build(BuildContext context) {
@@ -131,21 +207,128 @@ class AssetsList extends StatelessWidget {
         ),
       );
     }
-    return Expanded(
-      child: ListView.builder(
-        itemCount: portfolioState.portfolio!.transactions.length,
-        itemBuilder: (context, index) {
-          final portfolio = portfolioState.portfolio!.transactions[index];
-          return ListTile(
-            title: Text(portfolio.name),
-            subtitle: Text(portfolio.amount.toString()),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () {},
+
+    if (coinDataState.status == CoinDataStateStatus.loading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    List<AssetModel> assets =
+        portfolioState.portfolio!.getAssets(coinDataState.coinData!);
+
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: assets.length,
+      itemBuilder: (context, index) {
+        final asset = assets[index];
+
+        return Card(
+          margin: EdgeInsets.only(bottom: ScreenConfig.scaledHeight(0.02)),
+          child: ListTile(
+            leading: Column(
+              children: [
+                CircleAvatar(
+                    radius: ScreenConfig.scaledHeight(0.02),
+                    backgroundImage: NetworkImage(asset.coin.image),
+                    backgroundColor: Colors.transparent,
+                    onBackgroundImageError: (exception, stackTrace) {
+                      log('Error loading image: $exception');
+                    }),
+              ],
             ),
-          );
-        },
-      ),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  asset.coin.name,
+                  style: TextStyle(
+                    fontSize: ScreenConfig.scaledFontSize(1),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  '\$ ${asset.currentTotalValue.toStringAsFixed(2)}',
+                  style: TextStyle(
+                    fontSize: ScreenConfig.scaledFontSize(1),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            subtitle: Column(
+              children: [
+                SizedBox(height: ScreenConfig.scaledHeight(0.005)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '\$ ${asset.coin.currentPrice.toStringAsFixed(2)}',
+                      style: TextStyle(
+                        fontSize: ScreenConfig.scaledFontSize(0.9),
+                        color: Colors.grey.shade400,
+                      ),
+                    ),
+                    Text(
+                      '${asset.totalAmount} coins',
+                      style: TextStyle(
+                        fontSize: ScreenConfig.scaledFontSize(0.9),
+                        color: Colors.grey.shade400,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: ScreenConfig.scaledHeight(0.005)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          asset.profit > 0
+                              ? Icons.arrow_drop_up
+                              : asset.profit < 0
+                                  ? Icons.arrow_drop_down
+                                  : Icons.remove,
+                          size: ScreenConfig.scaledHeight(0.02),
+                          color: asset.profit > 0
+                              ? Colors.green
+                              : asset.profit < 0
+                                  ? Colors.red
+                                  : Colors.grey.shade400,
+                        ),
+                        Text(
+                          '${asset.profitPercentage.toStringAsFixed(2)}%',
+                          style: TextStyle(
+                            fontSize: ScreenConfig.scaledFontSize(0.9),
+                            color: asset.profit > 0
+                                ? Colors.green
+                                : asset.profit < 0
+                                    ? Colors.red
+                                    : Colors.grey.shade400,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      '\$ ${asset.profit.toStringAsFixed(2)}',
+                      style: TextStyle(
+                        fontSize: ScreenConfig.scaledFontSize(0.9),
+                        color: asset.profit > 0
+                            ? Colors.green
+                            : asset.profit < 0
+                                ? Colors.red
+                                : Colors.grey.shade400,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

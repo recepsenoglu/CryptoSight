@@ -1,4 +1,5 @@
 import 'package:cryptosight/app/features/portfolio/data/models/portfolio_model.dart';
+import 'package:cryptosight/app/features/portfolio/data/models/transaction_model.dart';
 import 'package:cryptosight/services/portfolio_hive_service.dart';
 
 class PortfolioRepository {
@@ -20,5 +21,9 @@ class PortfolioRepository {
 
   Future<void> deletePortfolio(int index) async {
     await hiveService.deletePortfolio(index);
+  }
+
+  Future<void> addTransaction(int portfolioIndex, TransactionModel transaction) async {
+    await hiveService.addTransaction(portfolioIndex, transaction);
   }
 }

@@ -31,9 +31,8 @@ class PortfolioState {
 
 class PortfolioNotifier extends StateNotifier<PortfolioState> {
   final PortfolioRepository repository;
-  final Ref ref;
 
-  PortfolioNotifier(this.ref, {required this.repository})
+  PortfolioNotifier({required this.repository})
       : super(PortfolioState.loading()) {
     getPortfolio();
   }
@@ -87,6 +86,18 @@ class PortfolioNotifier extends StateNotifier<PortfolioState> {
       state = PortfolioState.success(portfolio);
     } catch (e) {
       log('Error occurred while editing portfolio name', error: e);
+      state = PortfolioState.error(e.toString());
+    }
+  }
+
+  Future<void> clearPortfolio() async {
+    log('Clearing portfolio');
+    try {
+      final portfolio = state.portfolio!.copyWith(transactions: []);
+      await repository.updatePortfolio(0, portfolio);
+      state = PortfolioState.success(portfolio);
+    } catch (e) {
+      log('Error occurred while clearing portfolio', error: e);
       state = PortfolioState.error(e.toString());
     }
   }

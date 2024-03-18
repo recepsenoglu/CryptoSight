@@ -53,6 +53,7 @@ void showPortfolioNamePopup({
         ),
         actionsPadding: ScreenConfig.horizontalDynamicPadding(0.02)
             .copyWith(bottom: ScreenConfig.scaledHeight(0.01)),
+        actionsAlignment: MainAxisAlignment.spaceEvenly,
         actions: <Widget>[
           TextButton(
             onPressed: () {
@@ -74,8 +75,7 @@ void showPortfolioNamePopup({
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor:
-                  Colors.amber.shade700, 
+              backgroundColor: Colors.amber.shade700,
               padding: ScreenConfig.symmetricDynamicPadding(0.08, 0.005),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
