@@ -2,11 +2,13 @@ import 'package:cryptosight/app/features/market_cap/data/models/coin_simple_data
 
 class AssetModel {
   final CoinSimpleDataModel coin;
+  final int index;
   double totalAmount;
   double totalInvestment;
 
   AssetModel({
     required this.coin,
+    required this.index,
     required this.totalAmount,
     required this.totalInvestment,
   });
@@ -17,6 +19,7 @@ class AssetModel {
     double? totalInvestment,
   }) {
     return AssetModel(
+      index: index,
       coin: coin ?? this.coin,
       totalAmount: totalAmount ?? this.totalAmount,
       totalInvestment: totalInvestment ?? this.totalInvestment,

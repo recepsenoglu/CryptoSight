@@ -1,11 +1,13 @@
 import 'dart:developer';
 
+import 'package:cryptosight/app/core/constants/app_colors.dart';
 import 'package:cryptosight/app/core/router/app_router.dart';
 import 'package:cryptosight/app/core/router/route_names.dart';
 import 'package:cryptosight/app/features/market_cap/data/models/coin_simple_data_model.dart';
 import 'package:cryptosight/app/features/portfolio/data/models/asset_model.dart';
 import 'package:cryptosight/app/features/portfolio/domain/notifiers/coin_data_notifier.dart';
 import 'package:cryptosight/app/features/portfolio/domain/notifiers/portfolio_notifier.dart';
+import 'package:cryptosight/app/features/portfolio/presentation/widgets/total_balance_and_chart_section.dart';
 import 'package:cryptosight/app/features/portfolio/providers/coin_data_provider.dart';
 import 'package:cryptosight/app/features/portfolio/providers/portfolio_provider.dart';
 import 'package:cryptosight/shared/utils/extensions.dart';
@@ -13,6 +15,7 @@ import 'package:cryptosight/shared/utils/screen_config.dart';
 import 'package:cryptosight/shared/widgets/portfolio_name_popup.dart';
 import 'package:cryptosight/shared/widgets/portfolio_settings_bottom_sheet.dart';
 import 'package:cryptosight/shared/widgets/select_coin_bottom_sheet.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -351,94 +354,6 @@ class AssetsList extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class TotalBalanceAndChartSection extends StatelessWidget {
-  const TotalBalanceAndChartSection({
-    super.key,
-    required this.portfolioState,
-  });
-
-  final PortfolioState portfolioState;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: ScreenConfig.symmetricDynamicPadding(0.04, 0.01),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade800,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Total balance:',
-                style: TextStyle(
-                  fontSize: ScreenConfig.scaledFontSize(0.9),
-                  color: Colors.grey.shade400,
-                ),
-              ),
-              Text(
-                '\$ ${portfolioState.portfolio!.totalInvestment.toStringAsFixed(2)}',
-                style: TextStyle(
-                  fontSize: ScreenConfig.scaledFontSize(1.8),
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-          const Spacer(),
-          Column(
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    portfolioState.portfolio!.totalProfit > 0
-                        ? Icons.arrow_drop_up
-                        : portfolioState.portfolio!.totalProfit < 0
-                            ? Icons.arrow_drop_down
-                            : Icons.remove,
-                    size: ScreenConfig.scaledHeight(0.02),
-                    color: portfolioState.portfolio!.totalProfit > 0
-                        ? Colors.green
-                        : portfolioState.portfolio!.totalProfit < 0
-                            ? Colors.red
-                            : Colors.grey.shade400,
-                  ),
-                  Text(
-                    '${portfolioState.portfolio!.totalProfitPercentage.toStringAsFixed(2)}%',
-                    style: TextStyle(
-                      fontSize: ScreenConfig.scaledFontSize(0.9),
-                      color: portfolioState.portfolio!.totalProfit > 0
-                          ? Colors.green
-                          : portfolioState.portfolio!.totalProfit < 0
-                              ? Colors.red
-                              : Colors.grey.shade400,
-                    ),
-                  ),
-                ],
-              ),
-              Text(
-                '\$ ${portfolioState.portfolio!.totalProfit.toStringAsFixed(2)}',
-                style: TextStyle(
-                  fontSize: ScreenConfig.scaledFontSize(0.9),
-                  fontWeight: FontWeight.w600,
-                  color: portfolioState.portfolio!.totalProfit > 0
-                      ? Colors.green
-                      : portfolioState.portfolio!.totalProfit < 0
-                          ? Colors.red
-                          : Colors.grey.shade400,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 }

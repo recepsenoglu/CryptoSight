@@ -87,12 +87,14 @@ class PortfolioModel extends HiveObject {
         );
         if (transaction.type == TransactionType.BUY) {
           assets.add(AssetModel(
+            index: assets.length,
             coin: coin,
             totalAmount: transaction.amount,
             totalInvestment: transaction.amount * transaction.price,
           ));
         } else {
           assets.add(AssetModel(
+            index: assets.length,
             coin: coin,
             totalAmount: -transaction.amount,
             totalInvestment: -transaction.amount * transaction.price,
