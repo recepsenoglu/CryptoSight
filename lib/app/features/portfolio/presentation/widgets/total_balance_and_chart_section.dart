@@ -5,6 +5,7 @@ import 'package:cryptosight/app/features/portfolio/domain/notifiers/portfolio_no
 import 'package:cryptosight/shared/utils/screen_config.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class TotalBalanceAndChartSection extends StatefulWidget {
   const TotalBalanceAndChartSection({
@@ -103,36 +104,83 @@ class _TotalBalanceAndChartSectionState
             ],
           ),
           SizedBox(height: ScreenConfig.scaledHeight(0.01)),
-          SizedBox(
-            height: ScreenConfig.scaledHeight(0.3),
-            child: PieChart(
-              PieChartData(
-                sections: widget.portfolioState.portfolio!.assets
-                    .map(
-                      (asset) => PieChartSectionData(
-                        showTitle: false,
-                        value: asset.currentTotalValue,
-                        radius: asset.index == touchedIndex
-                            ? ScreenConfig.scaledHeight(0.07)
-                            : ScreenConfig.scaledHeight(0.055),
-                        color: assetColors[asset.index % assetColors.length],
+          Stack(
+            children: [
+              SizedBox(
+                height: ScreenConfig.scaledHeight(0.3),
+                child: PieChart(
+                  PieChartData(
+                    sections: widget.portfolioState.portfolio!.assets
+                        .map(
+                          (asset) => PieChartSectionData(
+                            showTitle: false,
+                            value: asset.currentTotalValue,
+                            radius: asset.index == touchedIndex
+                                ? ScreenConfig.scaledHeight(0.07)
+                                : ScreenConfig.scaledHeight(0.055),
+                            color:
+                                assetColors[asset.index % assetColors.length],
+                          ),
+                        )
+                        .toList(),
+                    sectionsSpace: 0,
+                    pieTouchData: PieTouchData(
+                      touchCallback: (flTouchEvent, pieTouchResponse) {
+                        if (pieTouchResponse?.touchedSection != null) {
+                          final touchedSection =
+                              pieTouchResponse!.touchedSection;
+                          setState(() {
+                            touchedIndex = touchedSection!.touchedSectionIndex;
+                          });
+                        }
+                      },
+                    ),
+                    centerSpaceRadius: ScreenConfig.scaledHeight(0.09),
+                  ),
+                ),
+              ),
+              touchedIndex != -1
+                  ? Positioned.fill(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              widget.portfolioState.portfolio!
+                                  .assets[touchedIndex].coin.symbol
+                                  .toUpperCase(),
+                              style: TextStyle(
+                                fontSize: ScreenConfig.scaledFontSize(1.2),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              '\$ ${widget.portfolioState.portfolio!.assets[touchedIndex].currentTotalValue.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                fontSize: ScreenConfig.scaledFontSize(0.9),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              '${widget.portfolioState.portfolio!.assets[touchedIndex].totalAmount} coins',
+                              style: TextStyle(
+                                fontSize: ScreenConfig.scaledFontSize(0.9),
+                                color: Colors.grey.shade400,
+                              ),
+                            ),
+                            Text(
+                              '${(widget.portfolioState.portfolio!.assets[touchedIndex].currentTotalValue / widget.portfolioState.portfolio!.totalInvestment * 100).toStringAsFixed(2)}%',
+                              style: TextStyle(
+                                fontSize: ScreenConfig.scaledFontSize(0.9),
+                                color: Colors.grey.shade400,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     )
-                    .toList(),
-                sectionsSpace: 0,
-                pieTouchData: PieTouchData(
-                  touchCallback: (flTouchEvent, pieTouchResponse) {
-                    if (pieTouchResponse?.touchedSection != null) {
-                      final touchedSection = pieTouchResponse!.touchedSection;
-                      setState(() {
-                        touchedIndex = touchedSection!.touchedSectionIndex;
-                      });
-                    }
-                  },
-                ),
-                centerSpaceRadius: ScreenConfig.scaledHeight(0.1),
-              ),
-            ),
+                  : const SizedBox.shrink(),
+            ],
           ),
           SizedBox(height: ScreenConfig.scaledHeight(0.01)),
           ListView.builder(
