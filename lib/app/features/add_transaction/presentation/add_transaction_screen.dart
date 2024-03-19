@@ -136,9 +136,18 @@ class AddTransactionScreen extends ConsumerWidget {
                               CustomTextField(
                                 prefixIcon: Icons.attach_money,
                                 keyboardType: TextInputType.number,
-                                controller: TextEditingController(
+                                controller: TextEditingController.fromValue(
+                                  TextEditingValue(
                                     text: addTransactionState.transaction!.price
-                                        .toCurrency()),
+                                        .toCurrency(),
+                                    selection: TextSelection.collapsed(
+                                      offset: addTransactionState
+                                          .transaction!.price
+                                          .toCurrency()
+                                          .length,
+                                    ),
+                                  ),
+                                ),
                                 onChanged: (p0) => ref
                                     .read(addTransactionProvider(coin).notifier)
                                     .changePrice(p0),

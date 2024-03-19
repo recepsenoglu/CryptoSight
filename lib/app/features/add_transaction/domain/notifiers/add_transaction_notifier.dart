@@ -71,11 +71,12 @@ class AddTransactionNotifier extends StateNotifier<AddTransactionState> {
 
   void changeAmount(String amount) {
     state.transaction!.amount = double.tryParse(amount) ?? 0;
-    log('Amount: ${state.transaction!.amount}');
     state = AddTransactionState.stable(state.transaction!);
   }
 
   void changePrice(String price) {
+    log('Price changed to $price');
+    if (price.contains(',')) price = price.replaceAll(RegExp(','), '');
     state.transaction!.price = double.tryParse(price) ?? 0;
     state = AddTransactionState.stable(state.transaction!);
   }
