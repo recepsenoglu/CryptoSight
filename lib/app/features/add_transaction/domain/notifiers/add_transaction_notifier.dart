@@ -103,14 +103,13 @@ class AddTransactionNotifier extends StateNotifier<AddTransactionState> {
     if (state.transaction!.type == TransactionType.SELL) {
       if (state.transaction!.amount > coin.amount) {
         state = AddTransactionState.error(
-            state.transaction!, 'You do not have enough coins');
+            state.transaction!, 'You do not have enough coins to sell!');
         return;
       }
     }
     try {
       state.transaction!.createdAt = DateTime.now();
-      log('Transaction amount: ${state.transaction!.amount}');
-      await repository.addTransaction(0, state.transaction!);
+      await repository.addTransaction(0, state.transaction!.copyWith());
       state = AddTransactionState.success(state.transaction!);
     } catch (e) {
       log('Error occurred while adding transaction', error: e);
@@ -118,7 +117,8 @@ class AddTransactionNotifier extends StateNotifier<AddTransactionState> {
     }
   }
 
-  void resetState() {
+  Future resetState() async {
+    log('Resetting state');
     state.transaction!.amount = 0;
     state.transaction!.price = coin.currentPrice;
     state.transaction!.transactionDate = DateTime.now();

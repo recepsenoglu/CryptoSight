@@ -35,7 +35,8 @@ class PortfolioHiveService {
     await box.deleteAt(index);
   }
 
-  Future<void> addTransaction(int portfolioIndex, TransactionModel transaction) async {
+  Future<void> addTransaction(
+      int portfolioIndex, TransactionModel transaction) async {
     final box = await Hive.openBox<PortfolioModel>(boxName);
     final portfolio = box.getAt(portfolioIndex);
     portfolio?.transactions.add(transaction);

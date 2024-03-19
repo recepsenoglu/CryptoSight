@@ -35,4 +35,22 @@ class TransactionModel extends HiveObject {
     this.amount = 0.0,
     this.price = 0.0,
   });
+
+  TransactionModel copyWith({
+    DateTime? createdAt,
+    DateTime? transactionDate,
+    TransactionType? type,
+    String? coinId,
+    double? amount,
+    double? price,
+  }) {
+    return TransactionModel(
+      createdAt: createdAt ?? this.createdAt,
+      transactionDate: transactionDate ?? this.transactionDate,
+      type: type ?? this.type,
+      coinId: coinId ?? this.coinId,
+      amount: amount ?? this.amount,
+      price: price ?? this.price,
+    );
+  }
 }
