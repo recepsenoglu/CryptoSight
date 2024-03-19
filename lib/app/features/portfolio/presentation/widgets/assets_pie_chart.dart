@@ -23,6 +23,10 @@ class _AssetsPieChartState extends State<AssetsPieChart> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.assets.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    
     return Container(
       padding: ScreenConfig.symmetricDynamicPadding(0.04, 0.01),
       decoration: BoxDecoration(

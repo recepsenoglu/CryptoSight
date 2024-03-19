@@ -38,49 +38,52 @@ class BalanceAndProfit extends StatelessWidget {
           ],
         ),
         const Spacer(),
-        Column(
-          children: [
-            Row(
-              children: [
-                Icon(
-                  totalProfit > 0
-                      ? Icons.arrow_drop_up
-                      : totalProfit < 0
-                          ? Icons.arrow_drop_down
-                          : Icons.remove,
-                  size: ScreenConfig.scaledHeight(0.02),
-                  color: totalProfit > 0
-                      ? Colors.green
-                      : totalProfit < 0
-                          ? Colors.red
-                          : Colors.grey.shade400,
-                ),
-                Text(
-                  '${totalProfitPercentage.toStringAsFixed(2)}%',
-                  style: TextStyle(
-                    fontSize: ScreenConfig.scaledFontSize(0.9),
+        Visibility(
+          visible: totalProfit != 0,
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    totalProfit > 0
+                        ? Icons.arrow_drop_up
+                        : totalProfit < 0
+                            ? Icons.arrow_drop_down
+                            : Icons.remove,
+                    size: ScreenConfig.scaledHeight(0.02),
                     color: totalProfit > 0
                         ? Colors.green
                         : totalProfit < 0
                             ? Colors.red
                             : Colors.grey.shade400,
                   ),
-                ),
-              ],
-            ),
-            Text(
-              '\$ ${totalProfit.toCurrency()}',
-              style: TextStyle(
-                fontSize: ScreenConfig.scaledFontSize(0.9),
-                fontWeight: FontWeight.w600,
-                color: totalProfit > 0
-                    ? Colors.green
-                    : totalProfit < 0
-                        ? Colors.red
-                        : Colors.grey.shade400,
+                  Text(
+                    '${totalProfitPercentage.toStringAsFixed(2)}%',
+                    style: TextStyle(
+                      fontSize: ScreenConfig.scaledFontSize(0.9),
+                      color: totalProfit > 0
+                          ? Colors.green
+                          : totalProfit < 0
+                              ? Colors.red
+                              : Colors.grey.shade400,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
+              Text(
+                '\$ ${totalProfit.toCurrency()}',
+                style: TextStyle(
+                  fontSize: ScreenConfig.scaledFontSize(0.9),
+                  fontWeight: FontWeight.w600,
+                  color: totalProfit > 0
+                      ? Colors.green
+                      : totalProfit < 0
+                          ? Colors.red
+                          : Colors.grey.shade400,
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );

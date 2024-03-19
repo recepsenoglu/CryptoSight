@@ -45,7 +45,7 @@ class CoinDetailHeader extends StatelessWidget {
                   ),
                   const Spacer(),
                   Text(
-                    '\$${coinPrice.formatCoinPrice()}',
+                    '\$${coinPrice.toCurrency()}',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: ScreenConfig.scaledFontSize(1),

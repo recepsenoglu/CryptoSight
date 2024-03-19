@@ -139,7 +139,7 @@ class MarketDataLineChartSection extends StatelessWidget {
                                   ),
                                   children: [
                                     TextSpan(
-                                      text: '\n\$ ${e.y.formatCoinPrice()}',
+                                      text: '\n\$ ${e.y.toCurrency()}',
                                       // text: '\n${DateTime.fromMillisecondsSinceEpoch(e.x.toInt()).toLocal().hour}:${DateTime.fromMillisecondsSinceEpoch(e.x.toInt()).toLocal().minute}',
                                       style: TextStyle(
                                         color: Colors.black,

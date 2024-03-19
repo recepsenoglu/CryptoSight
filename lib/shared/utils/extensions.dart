@@ -57,27 +57,6 @@ extension NumExtension on num {
     return parts.join('.');
   }
 
-  // String toCurrency() {
-  //   if (abs() >= 1000) {
-  //     if (toString().contains('.')) {
-  //       List<String> parts = toString().split('.');
-  //       String integerPart = parts[0];
-  //       String decimalPart = parts.length > 1 ? '.${parts[1]}' : '';
-
-  //       RegExp regex = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
-  //       integerPart =
-  //           integerPart.replaceAllMapped(regex, (match) => '${match[1]},');
-
-  //       if (decimalPart.length > 3) {
-  //         decimalPart = decimalPart.substring(0, 3);
-  //       }
-
-  //       return integerPart + decimalPart;
-  //     }
-  //   }
-  //   return toString();
-  // }
-
   String toCurrencyString() {
     if (this >= 1000000000000) {
       return '${(this / 1000000000000).toStringAsFixed(1)}T';
@@ -93,27 +72,3 @@ extension NumExtension on num {
   }
 }
 
-extension PriceFormatter on double {
-  String formatCoinPrice() {
-    int decimalPlaces;
-    if (this >= 1) {
-      decimalPlaces = 2;
-    } else {
-      decimalPlaces = 2;
-      double temp = this;
-      while (temp < 1) {
-        temp *= 10;
-        decimalPlaces++;
-      }
-      decimalPlaces = decimalPlaces > 8 ? 8 : decimalPlaces;
-    }
-
-    String formattedNumber = toStringAsFixed(decimalPlaces);
-    formattedNumber =
-        formattedNumber.replaceAll(RegExp(r'([.]*0+)(?!.*\d)'), '');
-
-    formattedNumber = double.parse(formattedNumber).toCurrency();
-
-    return formattedNumber;
-  }
-}

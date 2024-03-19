@@ -44,7 +44,7 @@ class CoinMarketDataItemListTile extends StatelessWidget {
           ),
           SizedBox(width: ScreenConfig.scaledWidth(0.03)),
           Text(
-            '\$ ${coin.currentPrice.formatCoinPrice()}',
+            '\$ ${coin.currentPrice.toCurrency()}',
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: ScreenConfig.scaledFontSize(1),
