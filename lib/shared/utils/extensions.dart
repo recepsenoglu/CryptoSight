@@ -5,16 +5,15 @@ extension StringExtension on String {
 }
 
 extension DateTimeExtension on DateTime {
-String toFormattedString() {
-  String paddedDay = day.toString().padLeft(2, '0');
-  String paddedMonth = month.toString().padLeft(2, '0');
-  String paddedYear = year.toString();
-  String paddedHour = hour.toString().padLeft(2, '0');
-  String paddedMinute = minute.toString().padLeft(2, '0');
+  String toFormattedString() {
+    String paddedDay = day.toString().padLeft(2, '0');
+    String paddedMonth = month.toString().padLeft(2, '0');
+    String paddedYear = year.toString();
+    String paddedHour = hour.toString().padLeft(2, '0');
+    String paddedMinute = minute.toString().padLeft(2, '0');
 
-  return '$paddedDay/$paddedMonth/$paddedYear - $paddedHour:$paddedMinute';
-}
-
+    return '$paddedDay/$paddedMonth/$paddedYear - $paddedHour:$paddedMinute';
+  }
 
   String when() {
     final now = DateTime.now();
@@ -37,19 +36,47 @@ extension NumExtension on num {
   }
 
   String toCurrency() {
-    if (this >= 1000) {
-      List<String> parts = toString().split('.');
-      String integerPart = parts[0];
-      String decimalPart = parts.length > 1 ? '.${parts[1]}' : '';
+    if (this == 0) return '0';
 
-      RegExp regex = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
-      integerPart =
-          integerPart.replaceAllMapped(regex, (match) => '${match[1]},');
+    String formattedNumber;
 
-      return integerPart + decimalPart;
+    if (abs() >= 1) {
+      formattedNumber =
+          toStringAsFixed(2).replaceAll(RegExp(r'(\.0+)|(0+)$'), '');
+    } else {
+      int decimalPlaces =
+          2 + toString().split('.')[1].indexOf(RegExp(r'[1-9]'));
+      formattedNumber = toStringAsFixed(decimalPlaces);
     }
-    return toString();
+
+    List<String> parts = formattedNumber.split('.');
+    RegExp regExp = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
+    parts[0] =
+        parts[0].replaceAllMapped(regExp, (Match match) => '${match[1]},');
+
+    return parts.join('.');
   }
+
+  // String toCurrency() {
+  //   if (abs() >= 1000) {
+  //     if (toString().contains('.')) {
+  //       List<String> parts = toString().split('.');
+  //       String integerPart = parts[0];
+  //       String decimalPart = parts.length > 1 ? '.${parts[1]}' : '';
+
+  //       RegExp regex = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
+  //       integerPart =
+  //           integerPart.replaceAllMapped(regex, (match) => '${match[1]},');
+
+  //       if (decimalPart.length > 3) {
+  //         decimalPart = decimalPart.substring(0, 3);
+  //       }
+
+  //       return integerPart + decimalPart;
+  //     }
+  //   }
+  //   return toString();
+  // }
 
   String toCurrencyString() {
     if (this >= 1000000000000) {
